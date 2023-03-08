@@ -48,7 +48,7 @@ public class RedisInputStream extends FilterInputStream {
 
 		final String reply = sb.toString();
 		if (reply.length() == 0) {
-			throw new RuntimeException("The server has closed the connection.");
+			throw new JedisConnectionException("The server has closed the connection.");
 		}
 
 		return reply;
@@ -68,7 +68,7 @@ public class RedisInputStream extends FilterInputStream {
 			if (b == '\r') {
 				ensureFill();
 				if (buf[count++] != '\n') {
-					throw new RuntimeException("Unexpected character!");
+					throw new JedisConnectionException("Unexpected character!");
 				}
 
 				break;

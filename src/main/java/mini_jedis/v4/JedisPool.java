@@ -8,8 +8,6 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import mini_jedis.v4.exception.JedisException;
 
-// so many constructors!
-// TODO
 public class JedisPool extends GenericObjectPool<Jedis> {
 
 	public JedisPool(String host, int port) {

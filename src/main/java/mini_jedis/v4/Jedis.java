@@ -174,7 +174,7 @@ public class Jedis implements Closeable {
 		while (offset < len) {
 			final int size = is.read(read, offset, (len - offset));
 			if (size == -1) {
-				throw new RuntimeException("The server has closed the connection.");
+				throw new JedisConnectionException("The server has closed the connection.");
 			}
 			offset += size;
 		}
