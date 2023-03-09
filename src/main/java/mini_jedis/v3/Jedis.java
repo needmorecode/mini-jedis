@@ -1,6 +1,7 @@
 package mini_jedis.v3;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -15,10 +16,13 @@ public class Jedis {
 	private RedisInputStream is;
 
 	public Jedis(String host, int port) throws UnknownHostException, IOException {
-		socket = new Socket(host, port);
+		socket = new Socket();
+		socket.setReuseAddress(true);
 		socket.setKeepAlive(true); // Will monitor the TCP connection is valid
 		socket.setTcpNoDelay(true); // Socket buffer Whetherclosed, to ensure timely delivery of data
 		socket.setSoLinger(true, 0); // Control calls close () method, the underlying socket is closed immediately
+		socket.connect(new InetSocketAddress(host, port), 2000);
+		socket.setSoTimeout(2000);
 		os = new RedisOutputStream(socket.getOutputStream());
 		is = new RedisInputStream(socket.getInputStream());
 	}

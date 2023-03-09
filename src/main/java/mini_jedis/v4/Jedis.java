@@ -2,6 +2,7 @@ package mini_jedis.v4;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
 import mini_jedis.v4.exception.JedisConnectionException;
+
 
 public class Jedis implements Closeable {
 
@@ -235,10 +237,13 @@ public class Jedis implements Closeable {
 	
 	public void connect(){
 		try {
-			socket = new Socket(host, port);
+			socket = new Socket();
+			socket.setReuseAddress(true);
 			socket.setKeepAlive(true); // Will monitor the TCP connection is valid
 			socket.setTcpNoDelay(true); // Socket buffer Whetherclosed, to ensure timely delivery of data
 			socket.setSoLinger(true, 0); // Control calls close () method, the underlying socket is closed immediately
+			socket.connect(new InetSocketAddress(host, port), 2000);
+			socket.setSoTimeout(2000);
 			os = new RedisOutputStream(socket.getOutputStream());
 			is = new RedisInputStream(socket.getInputStream());
 		} catch (Exception e) {

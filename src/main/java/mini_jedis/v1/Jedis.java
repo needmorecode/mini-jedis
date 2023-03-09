@@ -2,19 +2,25 @@ package mini_jedis.v1;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import mini_jedis.v3.RedisInputStream;
+import mini_jedis.v3.RedisOutputStream;
 
 public class Jedis {
 	
 	private Socket socket;
 	
 	public Jedis(String host, int port) throws UnknownHostException, IOException {
-		socket = new Socket(host, port);
-        socket.setReuseAddress(true);
-        socket.setKeepAlive(true); // Will monitor the TCP connection is valid
-        socket.setTcpNoDelay(true); // Socket buffer Whetherclosed, to ensure timely delivery of data
-        socket.setSoLinger(true, 0); // Control calls close () method, the underlying socket is closed immediately
+		socket = new Socket();
+		socket.setReuseAddress(true);
+		socket.setKeepAlive(true); // Will monitor the TCP connection is valid
+		socket.setTcpNoDelay(true); // Socket buffer Whetherclosed, to ensure timely delivery of data
+		socket.setSoLinger(true, 0); // Control calls close () method, the underlying socket is closed immediately
+		socket.connect(new InetSocketAddress(host, port), 2000);
+		socket.setSoTimeout(2000);
 	}
 	
 	public String set(String key, String value) throws IOException {
